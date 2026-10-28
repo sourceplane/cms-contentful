@@ -4,7 +4,9 @@
 |---|---|---|
 | CC0 — the spec | ✅ | the repository's first commit, CC-1 |
 | CC1 — the blog on Workers | ✅ | CC-2 |
-| CC2 — a baseline | planned | CC-3 |
+| CC2 — a baseline | ✅ | CC-3, tagged `baseline-v1` |
+
+The Worker is 5.4 MiB raw, 1.1 MiB gzipped — inside Workers Free's 3 MiB.
 
 ## Departures from the upstream template
 
