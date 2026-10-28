@@ -1,0 +1,31 @@
+# The epic's declaration. metadata.name equals the directory name; metadata.key
+# is the task-key prefix this epic reserves (CC → CC-1, CC-2, …). Owner, target
+# date and health are the platform's — never written here.
+apiVersion: orun.io/v1
+kind: Epic
+metadata:
+  name: cms-contentful
+  key: CC
+spec:
+  title: "Vercel's Next.js Blog with Draft Mode (Contentful) on Cloudflare Workers"
+  summary: "Vercel's Next.js Blog with Draft Mode (Contentful) — posts and authors read from a Contentful space over its GraphQL API, rich text, draft mode through the Content Preview API, and the setup script that imports the content model — runs on Cloudflare Workers + Static Assets through @opennextjs/cloudflare, inside the Cirrus baseline's repository conventions, and becomes an Orun baseline that takes a new blog from nothing to live on stage and prod in one landing, serving bundled sample posts until its owner connects a space."
+  state: started
+  milestones:
+    - name: "CC0 — the spec"
+      exitCriteria:
+        - "the repository is born with its intent, CI, tooling and spec index, and this doc set and the task contracts are on main"
+      tasks: [CC-1]
+    - name: "CC1 — the blog on Workers"
+      exitCriteria:
+        - "apps/web is the upstream template, built by next build, then by OpenNext into one Worker with Static Assets, every page rendered on request"
+        - "with no space at build the blog serves bundled sample posts under a notice that says how to connect, and draft mode answers 401 with the reason"
+        - "`pnpm typecheck`, `pnpm lint`, `pnpm test` and `pnpm build` are green"
+        - "`wrangler dev` serves the home page, every sample post, a 404 for an unknown post, draft mode's 401, leaving draft mode and the webhook's 401"
+        - "the README says how to run, test, preview, connect and deploy it, and how every Vercel piece maps to Cloudflare"
+      tasks: [CC-2]
+    - name: "CC2 — a baseline"
+      exitCriteria:
+        - "blueprint.yaml (the console card) and repo-blueprint.yaml (the build) take a new blog from nothing to live on stage and prod in one landing, then record it"
+        - "a blog built from it carries the blog only, renamed throughout to its own name, repository and Worker, with the template's link intact"
+        - "Baseline CI is green: contract tests, generated component docs, the blueprint read by the pinned orun, the leak gate, the offline bootstrap and the end-to-end tier"
+      tasks: [CC-3]

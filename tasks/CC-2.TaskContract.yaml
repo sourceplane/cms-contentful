@@ -1,0 +1,18 @@
+apiVersion: orun.io/v1
+kind: TaskContract
+metadata:
+  name: CC-2
+  title: "The blog on Workers"
+spec:
+  goal: Vercel's Next.js Blog with Draft Mode (Contentful) runs on Cloudflare Workers + Static Assets through OpenNext, deployable before a Contentful space exists, with its tests and a README that says how it maps to Vercel
+  affects:
+    - apps/web
+    - tests/web
+    - pnpm-lock.yaml
+    - pnpm-workspace.yaml
+    - README.md
+    - .gitignore
+  doneWhen:
+    - pnpm typecheck, lint, test and build are green
+    - wrangler dev serves the home page, every sample post, a 404 for an unknown post, and draft mode's 401 with the reason, with no space behind it
+  gates: []
