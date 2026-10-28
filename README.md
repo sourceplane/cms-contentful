@@ -6,9 +6,9 @@ API, the post body rich text rendered with Contentful's renderer, draft mode
 that previews unpublished posts through the Content Preview API, and the
 setup script that imports the content model — running on **Cloudflare
 Workers + Static Assets** through
-[`@opennextjs/cloudflare`](https://opennext.js.org/cloudflare), deployed by
-[Orun](https://github.com/sourceplane/orun) to stage and prod on every merge.
-Packaging it as an Orun baseline is the next milestone (CC2).
+[`@opennextjs/cloudflare`](https://opennext.js.org/cloudflare), and packaged
+as an **Orun baseline**: one command takes a new blog from nothing to live on
+stage and prod, in its own repository, under its own name — in ONE landing.
 It goes live before its owner has a Contentful space at all.
 
 The template's code is the code and Contentful stays the SaaS it is. What
@@ -17,11 +17,58 @@ the deploy contract; what it changes is what Workers force: the blog renders
 on request against Contentful's API CDN instead of statically generating
 its pages and revalidating them by tag, and the draft route checks its
 preview secret itself instead of through Vercel's deployment-protection
-bypass. What
+bypass. What the baseline adds is everything needed to make a copy of it
+somebody else's — built the way
+[cirrus-baseline](https://github.com/sourceplane/cirrus-baseline) is. What
 makes it deployable with no Contentful space is the port's: an unconnected
 build renders bundled sample posts under a visible "connect your Contentful
 space" notice instead of failing. See [`specs/epics/cms-contentful`](specs/epics/cms-contentful/README.md)
 for the design, the milestones and the as-built status.
+
+## Instantiating a site
+
+```bash
+git clone --depth 1 --branch <baseline-tag> https://github.com/sourceplane/cms-contentful
+cd cms-contentful
+orun new --blueprint repo-blueprint.yaml --out ~/blogs/acme-notes --run-hooks --resume \
+  --set reponame=acme-notes --set productname="Acme Notes" \
+  --set githuborg=acme-inc --set subdomain=<workers-dev-subdomain>
+```
+
+Or, once the platform's registry lists it, from the Orun console (Baselines →
+`cms-contentful` → Build). Two phases — `01-product` (the repository, its CI and
+the whole blog in one pull request, deployed to stage and prod by one
+convergence, smoke-tested) and `02-docs` (the live deployment recorded) —
+each landing one pull request in the new repository.
+**[BOOTSTRAP.md](BOOTSTRAP.md)** is the operator guide;
+[docs/phases/](docs/phases/README.md) has a page per phase.
+
+The new repository receives the **blog only** — the app, its tests, its CI,
+its tooling, a README of its own and its operating contract — renamed
+throughout to the blog's name, repository and Cloudflare Worker. None of this
+repository's machinery ships, and nothing that ships names it.
+
+The only provider the bootstrap asks for is Cloudflare. **Contentful is not
+a provider the platform brokers**, so the blog is built without it and its
+owner connects a space afterwards: the content model imported with
+`pnpm --filter @app/web run setup`, two optional Orun secrets
+(`CONTENTFUL_SPACE_ID`, `CONTENTFUL_ACCESS_TOKEN`) and a redeploy, and — for
+draft mode only — the Worker secrets `CONTENTFUL_PREVIEW_ACCESS_TOKEN` and
+`CONTENTFUL_PREVIEW_SECRET` and a content preview URL in the space. The
+blog's README, "Connecting Contentful" (`.baseline/product/README.md` here),
+has the steps.
+
+| What makes it a baseline | Where |
+|---|---|
+| The console card (inputs, secrets, programme) | `blueprint.yaml` |
+| The build document (modules, phases, hooks) | `repo-blueprint.yaml` |
+| This tree's identity, and the bootstrap's task contracts | `.baseline/` |
+| The rename engine | `tooling/rebrand/rebrand.mjs` |
+| The bootstrap's helpers (deferrals, redeploy marker, work-tree strip) | `tooling/bootstrap/` |
+| The deployment-record renderer | `hooks/render-deployment-docs.sh` |
+| The blog's README and context pack | `.baseline/product/README.md`, `ai/context/` |
+| The baseline's tests: contract, leak, offline bootstrap, end to end | `testing/`, `.github/workflows/baseline.yml` |
+| Cutting a `baseline-vN` tag | `.github/workflows/tag.yml` |
 
 ## What is here (the site)
 
@@ -99,3 +146,5 @@ pnpm preview                      # wrangler dev over the built Worker
 | Workflow | What it runs | Ships to a blog |
 |---|---|---|
 | `ci.yml` | the Orun pipeline, and the only workflow a blog carries: `orun plan --changed`, then one job per lane. A pull request runs the verify lanes (the blog built and dry-deployed per environment; they do not lint or run the tests), except the bootstrap's own landings (`orun/BASE-*`), where `plan` alone is the check; a merge deploys stage → prod. It plans nothing while `intent.yaml` names the placeholder workspace `ws_CHANGE_ME`, as this repository does. A manual run (Orunbase's Deploy button, or Run workflow on `main`) plans the environment and components it names under the push-to-main trigger, so they deploy as a merge deploys them | yes |
+| `baseline.yml` | the baseline's own tiers: contract tests and the component docs' drift check, the blueprint read by the pinned orun, the leak gate, the offline bootstrap, each landing installed, its fixture rendered, type-checked, linted, tested and built, then the blog built in a staged job tree, dry-deployed and served with no Contentful space | no |
+| `tag.yml` | cuts a `baseline-vN` tag (manual) | no |

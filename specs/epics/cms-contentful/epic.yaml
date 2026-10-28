@@ -9,7 +9,7 @@ metadata:
 spec:
   title: "Vercel's Next.js Blog with Draft Mode (Contentful) on Cloudflare Workers"
   summary: "Vercel's Next.js Blog with Draft Mode (Contentful) — posts and authors read from a Contentful space over its GraphQL API, rich text, draft mode through the Content Preview API, and the setup script that imports the content model — runs on Cloudflare Workers + Static Assets through @opennextjs/cloudflare, inside the Cirrus baseline's repository conventions, and becomes an Orun baseline that takes a new blog from nothing to live on stage and prod in one landing, serving bundled sample posts until its owner connects a space."
-  state: started
+  state: completed
   milestones:
     - name: "CC0 — the spec"
       exitCriteria:
