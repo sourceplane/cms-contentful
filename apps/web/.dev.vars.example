@@ -1,0 +1,11 @@
+# Local Worker secrets for `wrangler dev` / `opennextjs-cloudflare preview`.
+# Copy to .dev.vars (git-ignored). In stage/prod each is a Worker secret, set
+# once per environment with
+#   wrangler secret put CONTENTFUL_PREVIEW_ACCESS_TOKEN --name cms-contentful-web-<env>
+# (README → Connecting Contentful); the deploy lane never sets or clears them.
+# The space id and the delivery token are not here: they are inlined at build
+# time (see .env.example). All optional: without the preview token and the
+# preview secret, draft mode is refused with a 401.
+CONTENTFUL_PREVIEW_ACCESS_TOKEN=
+CONTENTFUL_PREVIEW_SECRET=
+CONTENTFUL_REVALIDATE_SECRET=

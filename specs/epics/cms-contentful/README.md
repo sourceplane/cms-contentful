@@ -8,7 +8,7 @@ of it somebody else's blog in one landing.**
 
 | | |
 |---|---|
-| Status | In progress — CC0 on main |
+| Status | In progress — CC1 on main: the site runs on Workers |
 | Upstream | [vercel/next.js `examples/cms-contentful`](https://github.com/vercel/next.js/tree/canary/examples/cms-contentful) (MIT), at `7356b0b` (2026-10-28) |
 | Reference | [cms-sanity](https://github.com/sourceplane/cms-sanity) — the same scaffolding, tests and bootstrap, and the unconnected sample mode this blog copies |
 | Key | `CC` |
